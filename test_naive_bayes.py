@@ -18,6 +18,12 @@ class NaiveBayesTest(unittest.TestCase):
     ret = self.naive_bayes.classify('君が発表するまで勉強会を止めない！')
     self.assertEqual(ret,'ジョナサン')
 
+    ret = self.naive_bayes.classify('おれはエンジニアをやめるぞ！ジョジョーーーーッ！！')
+    self.assertEqual(ret,'ディオ')
+
+    ret = self.naive_bayes.classify('てめーは仕様を複雑にした')
+    self.assertEqual(ret,'承太郎')
+
 if __name__ == '__main__':
   unittest.main()
 
