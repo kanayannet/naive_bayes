@@ -9,49 +9,58 @@ class NaiveBayes:
     self.vocabularies = set()
     self.word_count = {}
     self.category_count = {}
+    self.category = ''
+    self.word = ''
 
-  def train(self,category,word):
-    words = self.word_to_mecab(word)
+  def set_category(self,category):
+    self.category = category
+
+  def set_word(self,word):
+    self.word = word
+
+  def learn(self):
+    words = self.get_wakati_by_word(self.word)
     for w in words:
-      self.word_count_up(word=w, category=category)
-    self.count_up_by_category(category)
+      self.count_up_by_wakati_word(w)
+    self.count_up_by_category(self.category)
 
   def count_up_by_category(self,category):
     self.category_count.setdefault(category,0)
     self.category_count[category] += 1
 
-  def word_count_up(self,**refs):
-    self.word_count.setdefault(refs['category'],{})
-    self.word_count[refs['category']].setdefault(refs['word'],0)
-    self.word_count[refs['category']][refs['word']] += 1
-    self.vocabularies.add(refs['word'])
+  def count_up_by_wakati_word(self,word):
+    self.word_count.setdefault(self.category,{})
+    self.word_count[self.category].setdefault(word,0)
+    self.word_count[self.category][word] += 1
+    self.vocabularies.add(word)
 
-  def word_to_mecab(self,word):
+  def get_wakati_by_word(self,word):
     tagger = MeCab.Tagger()
     node = tagger.parseToNode(word)
     ret = []
     while node:
-      elem = node.feature.split(",")[6]
-      if not elem == '*':
-        ret.append(elem)
+      words = node.feature.split(',')
+      if not words[6] == '*':
+        ret.append(words[6])
       node = node.next
     return tuple(ret)
 
   def classify(self,word):
     best_category = None
     max_prob_before = -sys.maxsize
-    words = self.word_to_mecab(word)
+    words = self.get_wakati_by_word(word)
     for category in self.category_count.keys():
-      prob = self.get_score(words=words, category=category)
+      self.set_category(category)
+      prob = self.get_score_by_words(words)
       if prob > max_prob_before:
         max_prob_before = prob
         best_category = category
     return best_category
     
-  def get_score(self,**refs):
-    score = math.log(self.get_prior_prob_by_category(refs['category']))
-    for word in refs['words']:
-      score += math.log(self.get_word_prob(word=word, category=refs['category']))
+  def get_score_by_words(self,words):
+    score = math.log(self.get_prior_prob_by_category(self.category) )
+    for word in words:
+      score += math.log(self.get_word_prob_by_word(word) )
     return score
 
   def get_prior_prob_by_category(self,category):
@@ -59,13 +68,13 @@ class NaiveBayes:
     categories_count = self.category_count[category]
     return categories_count / categories_count_sum
 
-  def get_word_prob(self,**refs):
-    numerator = self.get_word_count(word=refs['word'], category=refs['category']) + 1
-    denominator = sum(self.word_count[refs['category']].values()) + len(self.vocabularies)
+  def get_word_prob_by_word(self,word):
+    numerator = self.get_word_count_by_word(word) + 1
+    denominator = sum(self.word_count[self.category].values()) + len(self.vocabularies)
     return numerator / denominator
 
-  def get_word_count(self,**refs):
-    self.word_count[refs['category']].setdefault(refs['word'],0)
-    return self.word_count[refs['category']][refs['word']]
+  def get_word_count_by_word(self,word):
+    self.word_count[self.category].setdefault(word,0)
+    return self.word_count[self.category][word]
 
 
