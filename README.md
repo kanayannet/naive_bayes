@@ -24,7 +24,9 @@
   - キャラとセリフを足したければここを修正してください。
 
 - 学習method
-  - train
+  - set_category('カテゴリー 登場人物など')
+  - set_word('言葉 セリフなど')
+  - learn
 
 - 結果を判定する method
   - classify
