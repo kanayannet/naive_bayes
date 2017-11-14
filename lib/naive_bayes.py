@@ -40,8 +40,10 @@ class NaiveBayes:
     ret = []
     while node:
       words = node.feature.split(',')
-      if not words[6] == '*':
-        ret.append(words[6])
+      if words[0] in ["名詞", "動詞", "形容詞", "副詞", "連体詞", "感動詞", "助詞", "助動詞", "記号"]:
+        if not words[6] == '*':
+          ret.append(words[6])
+          ret.append(words[7])
       node = node.next
     return tuple(ret)
 

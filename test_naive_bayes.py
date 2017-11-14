@@ -23,6 +23,9 @@ class NaiveBayesTest(unittest.TestCase):
     ret = self.naive_bayes.classify('おれはエンジニアをやめるぞ！ジョジョーーーーッ！！')
     self.assertEqual(ret,'ディオ')
 
+    ret = self.naive_bayes.classify('おまえは今まで参加した勉強会をおぼえているのか？')
+    self.assertEqual(ret,'ディオ')
+
     ret = self.naive_bayes.classify('てめーは仕様を複雑にした')
     self.assertEqual(ret,'承太郎')
 
