@@ -15,7 +15,7 @@
 
 ## 必要なライブラリ
 
-- pip install MeCab
+- pip install mecab-python3
 
 ## 使い方
 
