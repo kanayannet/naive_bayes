@@ -12,8 +12,8 @@ class NaiveBayesTest(unittest.TestCase):
     with open('./data/jojo.dat','r') as file:
       for rec in file:
         name,serif = rec.strip().split("\t")
-        self.naive_bayes.set_category(name)
-        self.naive_bayes.set_word(serif)
+        self.naive_bayes.category = name
+        self.naive_bayes.word = serif
         self.naive_bayes.learn()
 
   def test_result(self):
